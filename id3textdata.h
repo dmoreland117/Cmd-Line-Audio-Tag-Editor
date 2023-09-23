@@ -12,7 +12,7 @@ enum Id3StringEncoding {
 
 typedef struct {
     char encoding;
-    char data;
+    char data[];
 } Id3TextData;
 
 /// @brief Gets a string from bytes in a buffer.
@@ -23,36 +23,55 @@ typedef struct {
 /// @return the length of the string.
 int getStringFromBuffer(Id3TextData* data, char* outStr[], int from, int to)
 {
+    char* char_ptr = NULL;
+    char newString[100];
+    int stringLength = 0;
+
     switch (data->encoding)
     {
     case UTF_16:
         printf("Found String: UTF-16.   \n");
-        char* char_ptr = &data->data+2;
-        char newString[100];
+        char_ptr = &data->data[2];
 
-        int i = 0;
         while (1)
         {
             if ((*char_ptr == 0x00))
             {
                 if (char_ptr[1] == 0x00)
                 {
-                    char* str_Ptr = malloc(i);
-                    memcpy(str_Ptr, &newString, i);
+                    char* str_Ptr = malloc(stringLength);
+                    memcpy(str_Ptr, &newString, stringLength);
                     *outStr = str_Ptr;
-                    return i;
+                    return stringLength;
                 }
 
                 char_ptr++;
             }
 
-            newString[i] = *char_ptr;
+            newString[stringLength] = *char_ptr;
 
-            i++;
+            stringLength++;
             char_ptr++;
         }
         break;
-    
+
+    case ISO_8859_1:
+        printf("Found String: UTF-8.   \n");
+        char_ptr = &data->data[0];
+
+        while (stringLength < (to - 1))
+        {
+            newString[stringLength] = *char_ptr;
+
+            stringLength++;
+            char_ptr++;
+        }
+        char* str_Ptr = malloc(stringLength);
+        memcpy(str_Ptr, &newString, stringLength);
+        *outStr = str_Ptr;
+        return stringLength;
+        
+
     default:
         break;
     }

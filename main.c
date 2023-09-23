@@ -114,7 +114,10 @@ int parseFile(char* filePath, AudioInfo* outInfo)
 
 int main(int argc, char* argv[])
 {
+    // args
     char* filePath = NULL;
+    int editFile = 0;
+
     AudioInfo info;
 
     // geting command line args.
@@ -123,6 +126,10 @@ int main(int argc, char* argv[])
         if(strcmp("-f", argv[i]) == 0)
         {
             filePath = argv[i + 1];
+        }
+        if(strcmp("-e", argv[i]) == 0)
+        {
+            editFile = 1;
         }
         if(strcmp("-h", argv[i]) == 0)
         {
