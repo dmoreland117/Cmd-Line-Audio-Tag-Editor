@@ -1,3 +1,8 @@
+# vs code
+.vscode/
+
+*.mp3
+
 # Prerequisites
 *.d
 
